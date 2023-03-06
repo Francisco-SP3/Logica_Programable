@@ -1,24 +1,21 @@
--- Librerías
+--- UART 8 bits transmiter
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
--- Definición de entidad
 entity uart is
   port(
-    clk, reset: 	in 	std_logic; -- Clock y reset
-    tx_start: 	in 	std_logic; -- Entrada de comienzo
-    s_tick: 	in	std_logic; -- Tick
+    clk, reset: 	in 	std_logic;
+    tx_start: 	in 	std_logic;
+    s_tick: 	in	std_logic;
     d_in: 		in 	std_logic_vector(7 downto 0);
     tx_done_tick:	out	std_logic;
     tx: 		out 	std_logic
   );
 end entity;
 
--- Arquitectura de entidad
-architecture Behaviour of uart is
+architecture arch of uart is
 
-  -- Definición de componente
   component baudrate_gen is
     port(
       clk, reset: 	in 	std_logic;
@@ -83,21 +80,6 @@ begin
             end if;
             
         end case;
-        
-        case state is
-          when idle =>
-            tx <= '1';
-            
-        case state is
-          when idle =>
-            tx <= '0';
-            
-        case state is
-          when idle =>
-            tx <= '1';
-            
-            
-        
       end if;
   	end process;
 end architecture;
