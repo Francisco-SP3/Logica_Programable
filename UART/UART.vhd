@@ -24,6 +24,10 @@ architecture arch of uart is
   end component;
   
   signal tick : std_Logic;
+  
+  type state_type is (idle, start, data, stop);
+  	signal state: state_type;
+    signal count: integer range 0 to 7;
 
 begin
   
@@ -31,15 +35,11 @@ begin
 
     process (clk, reset)
     
-    type state_type is (idle, start, data, stop);
-  	variable state: state_type := idle;
-    variable count: integer range 0 to 7 := 0;
-    
     begin
     
       if reset = '1' then
-        state := idle;
-        count := 0;
+        state <= idle;
+        count <= 0;
         tx <= '1';
         tx_done_tick <= '0';
         
@@ -49,34 +49,35 @@ begin
         
           when idle =>
             if tx_start = '0' then
-              state := idle;
+              state <= idle;
             elsif tx_start = '1' then
-              state := start;
+              state <= start;
             end if;
             
           when start =>
               if tick = '0' then
-                state := start;
+                state <= start;
               elsif tick = '1' then
-              	state := data;
+              	state <= data;
               end if;
               
           when data =>
             if tick = '0' then
-              state := data;
+              state <= data;
             elsif tick = '1' AND count < 7 then
-              state := data;
+              state <= data;
               tx <= d_in(count);
-              count := count + 1;
+              count <= count + 1;
             elsif tick = '1' AND count >= 7 then
-              state := stop;
+              state <= stop;
+              count <= 0;
             end if;
             
           when stop =>
             tx <= '1';
             tx_done_tick <= '1';
             if tick = '1' then
-              state := idle;
+              state <= idle;
             end if;
             
         end case;

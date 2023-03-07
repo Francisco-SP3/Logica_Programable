@@ -45,8 +45,6 @@ begin
 	begin
   
 		-- Tell the UART to send a command.  Exercise TX    
-		wait until rising_edge(clk_tb);
-		wait until rising_edge(clk_tb);
 		tx_start_tb   <= '1';
 		d_in_tb <= X"55"; 
 	 	 
