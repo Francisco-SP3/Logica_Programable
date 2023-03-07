@@ -27,7 +27,7 @@ architecture arch of uart is
   
   type state_type is (idle, start, data, stop);
   	signal state: state_type;
-    signal count: integer range 0 to 7;
+    signal count: integer range 0 to 8;
 
 begin
   
@@ -64,11 +64,11 @@ begin
           when data =>
             if tick = '0' then
               state <= data;
-            elsif tick = '1' AND count < 7 then
+            elsif tick = '1' AND count <= 7 then
               state <= data;
               tx <= d_in(count);
               count <= count + 1;
-            elsif tick = '1' AND count >= 7 then
+            elsif tick = '1' AND count > 7 then
               state <= stop;
               count <= 0;
             end if;
