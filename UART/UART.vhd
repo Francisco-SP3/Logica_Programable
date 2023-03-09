@@ -24,21 +24,23 @@ architecture arch of uart is
   end component;
   
   signal tick : std_Logic;
+  
+  type state_type is (idle, start, data, stop);
+  signal state: state_type;
+  signal count_ascii : std_Logic := '0';
 
 begin
   
     baud_gen : baudrate_gen port map(clk, reset, tick);
 
     process (clk, reset)
-    
-    type state_type is (idle, start, data, stop);
-  	variable state: state_type := idle;
-    variable count: integer range 0 to 7 := 0;
+	 
+	 variable count: integer range 0 to 7;
     
     begin
     
-      if reset = '1' then
-        state := idle;
+      if reset = '0' then
+        state <= idle;
         count := 0;
         tx <= '1';
         tx_done_tick <= '0';
@@ -48,35 +50,39 @@ begin
         case state is
         
           when idle =>
-            if tx_start = '0' then
-              state := idle;
-            elsif tx_start = '1' then
-              state := start;
+            tx <= '1';
+            if tick = '0' then
+              state <= idle;
+            elsif tx_start = '0' AND tick = '1' AND count_ascii = '0' then
+              state <= start;
             end if;
             
           when start =>
+            tx <= '0';
               if tick = '0' then
-                state := start;
+                state <= start;
               elsif tick = '1' then
-              	state := data;
+              	state <= data;
               end if;
               
           when data =>
+            tx <= d_in(count);
             if tick = '0' then
-              state := data;
+              state <= data;
             elsif tick = '1' AND count < 7 then
-              state := data;
-              tx <= d_in(count);
+              state <= data;
               count := count + 1;
-            elsif tick = '1' AND count >= 7 then
-              state := stop;
+            elsif tick = '1' AND count = 7 then
+              state <= stop;
+              count := 0;
             end if;
             
           when stop =>
             tx <= '1';
             tx_done_tick <= '1';
+            count_ascii <= '1';
             if tick = '1' then
-              state := idle;
+              state <= idle;
             end if;
             
         end case;

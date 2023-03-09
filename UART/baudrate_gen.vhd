@@ -5,8 +5,8 @@ use 	ieee.numeric_std.all;
 entity baudrate_gen is
 	generic(
     		--M = clk_freq / baudrate, without oversampling
-		M: integer 	:= 5208;	--M = 50 MHz / 9600
-		N: integer	:= 13		--size of M
+		M: integer 	:= 434;	--M = 50 MHz / 115200
+		N: integer	:= 9		--size of M
 	);
 	port(
 		clk, reset:	in 	std_logic;
@@ -21,7 +21,7 @@ signal clk16_reg, clk16_next:		unsigned(N-1 downto 0) := (others => '0');
 begin
 	process(clk, reset)
 	begin
-		if (reset = '1') then
+		if (reset = '0') then
 			clk16_reg <= (others => '0');
 		elsif (clk'event and clk='1') then
 			clk16_reg <= clk16_next;

@@ -39,19 +39,17 @@ begin
 	clk_tb <= not clk_tb after c_CLK_PERIOD/2;
 
    	-- Instantiate UART transmitter
-	DUT:	uart port map(clk_tb, '0', tx_start_tb, s_tick_tb, d_in_tb, tx_done_tick_tb, tx_tb);
+	DUT:	uart port map(clk_tb, '1', tx_start_tb, s_tick_tb, d_in_tb, tx_done_tick_tb, tx_tb);
    
 	process is
 	begin
   
 		-- Tell the UART to send a command.  Exercise TX    
-		wait until rising_edge(clk_tb);
-		wait until rising_edge(clk_tb);
-		tx_start_tb   <= '1';
-		d_in_tb <= X"55"; 
+		tx_start_tb   <= '0';
+		d_in_tb <= "00110111"; 
 	 	 
 		wait until rising_edge(clk_tb);	
-		tx_start_tb   <= '0';
+		tx_start_tb   <= '1';
 	 
 		data1:	for i in 0 to 9 loop
 				wait for 8680 ns;
