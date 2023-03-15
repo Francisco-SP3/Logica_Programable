@@ -11,19 +11,15 @@ win1:       bss 1
 win2:       bss 1
 mov1:       bss 1
 mov2:       bss 1
+reset:      bss 1
+zero:       byte 0
 score1:     byte 0
 score2:     byte 0
 
             text
             org 0x010
 
-Actualizar: ldm r0, score1 ; Cargar puntuación de jugador 1
-            out r0, display1 ; Mostrar puntuación
-            ldm r0, score2 ; Cargar puntuación de jugador 2
-            out r0, display2 ; Mostrar puntuación 
-
 Jugador1:   inp r1, switches ; Recibir movimientos de jugador 1
-            jsb delay ; Esperar
             add r11, r1, 0 ; Registro temporal de r1
             sub r11, r11, 0x1 ;
             bz Arriba1
@@ -49,7 +45,7 @@ Izquierda1: add r0, r11,  0x3
 Derecha1:   add r0, r11,  0x4
             out r0, mov1
             jmp Jugador2
-Nada1:      add r0, r11,  0x0
+Nada1:      ldm r0, zero
             out r0, mov1
 
 Jugador2:   inp r2, numpad ; Recibir movimientos de jugador 2
@@ -68,36 +64,50 @@ Jugador2:   inp r2, numpad ; Recibir movimientos de jugador 2
             bz Abajo2
             jmp Nada2;
 Arriba2:    add r0, r22,  0x2
-            out r0, mov1
-            jmp Jugador2
+            out r0, mov2
+            jmp WinCnt1
 Abajo2:     add r0, r22,  0x5
-            out r0, mov1
-            jmp Jugador2
+            out r0, mov2
+            jmp WinCnt1
 Izquierda2: add r0, r22,  0x4
-            out r0, mov1
-            jmp Jugador2
+            out r0, mov2
+            jmp WinCnt1
 Derecha2:   add r0, r22,  0x6
-            out r0, mov1
-            jmp Jugador2
-Nada2:      add r0, r22,  0x0
-            out r0, mov1
+            out r0, mov2
+            jmp WinCnt1
+Nada2:      ldm r0, zero
+            out r0, mov2
 
 WinCnt1:    inp r3, win1 ; Recibe win condition
-            jsb delay
             and r3, r3, 1
 			bnz WinCnt2
             ldm r3, score1
             add r3, r3, 1
             stm r3, score1
+            jmp Resetear
 
 WinCnt2:    inp r4, win2 ; Recibe win condition
-            jsb delay
             and r4, r4, 1
 			bnz Actualizar
             ldm r4, score2
             add r4, r4, 1
             stm r4, score2
-            jmp Actualizar
+            jmp Resetear
+
+Actualizar: ldm r0, score1 ; Cargar puntuación de jugador 1
+            out r0, display1 ; Mostrar puntuación
+            ldm r0, score2 ; Cargar puntuación de jugador 2
+            out r0, display2 ; Mostrar puntuación 
+            jmp Jugador1
+
+Resetear:   ldm r0, zero
+            add r0, r0, 1
+            out r0, reset
+            jsb delay
+            subt r0, r0, 1
+            out r0, reset
+            jmp Jugador1
+
 
 delay:		add r7, r0, 0
 again3:		add r6, r0, 0
