@@ -1,6 +1,6 @@
             text
             org 0x000
-            jmp main
+            jmp Jugador1
 
             data
 switches:   bss 1
@@ -20,29 +20,29 @@ score2:     byte 0
             org 0x010
 
 Jugador1:   inp r1, switches ; Recibir movimientos de jugador 1
-            add r11, r1, 0 ; Registro temporal de r1
-            sub r11, r11, 0x1 ;
+            add r6, r1, 0 ; Registro temporal de r1
+            sub r6, r6, 0x1 ;
             bz Arriba1
-            add r11, r1, 0
-            sub r11, r11, 0x2 
+            add r6, r1, 0
+            sub r6, r6, 0x2 
             bz Abajo1
-            add r11, r1, 0
-            sub r11, r11, 0x4 
+            add r6, r1, 0
+            sub r6, r6, 0x4 
             bz Izquierda1
-            add r11, r1, 0
-            sub r11, r11, 0x8
+            add r6, r1, 0
+            sub r6, r6, 0x8
             bz Derecha1
-            jump Nada1 ; Si ninguna se cumplió, no moverse
-Arriba1:    add r0, r11,  0x1
+            jmp Nada1 ; Si ninguna se cumplió, no moverse
+Arriba1:    add r0, r6,  0x1
             out r0, mov1
             jmp Jugador2
-Abajo1:     add r0, r11,  0x2
+Abajo1:     add r0, r6,  0x2
             out r0, mov1
             jmp Jugador2
-Izquierda1: add r0, r11,  0x3
+Izquierda1: add r0, r6,  0x3
             out r0, mov1
             jmp Jugador2
-Derecha1:   add r0, r11,  0x4
+Derecha1:   add r0, r6,  0x4
             out r0, mov1
             jmp Jugador2
 Nada1:      ldm r0, zero
@@ -50,29 +50,29 @@ Nada1:      ldm r0, zero
 
 Jugador2:   inp r2, numpad ; Recibir movimientos de jugador 2
             jsb delay
-            add r22, r2, 0 ; Registro temporal de r2
-            sub r22, r22, 0x2 
+            add r7, r2, 0 ; Registro temporal de r2
+            sub r7, r7, 0x2 
             bz Arriba2
-            add r22, r2, 0
-            sub r22, r22, 0x4 
+            add r7, r2, 0
+            sub r7, r7, 0x4 
             bz Izquierda2
-            add r22, r2, 0
-            sub r22, r22, 0x6 
+            add r7, r2, 0
+            sub r7, r7, 0x6 
             bz Derecha2
-            add r22, r2, 0
-            sub r22, r22, 0x8 
+            add r7, r2, 0
+            sub r7, r7, 0x8 
             bz Abajo2
             jmp Nada2;
-Arriba2:    add r0, r22,  0x2
+Arriba2:    add r0, r7,  0x2
             out r0, mov2
             jmp WinCnt1
-Abajo2:     add r0, r22,  0x5
+Abajo2:     add r0, r7,  0x5
             out r0, mov2
             jmp WinCnt1
-Izquierda2: add r0, r22,  0x4
+Izquierda2: add r0, r7,  0x4
             out r0, mov2
             jmp WinCnt1
-Derecha2:   add r0, r22,  0x6
+Derecha2:   add r0, r7,  0x6
             out r0, mov2
             jmp WinCnt1
 Nada2:      ldm r0, zero
@@ -104,7 +104,7 @@ Resetear:   ldm r0, zero
             add r0, r0, 1
             out r0, reset
             jsb delay
-            subt r0, r0, 1
+            sub r0, r0, 1
             out r0, reset
             jmp Jugador1
 
