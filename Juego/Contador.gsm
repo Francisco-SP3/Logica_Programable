@@ -37,15 +37,20 @@ Jugador1:   inp r1, switches ; Recibir movimientos de jugador 1
             sub r11, r11, 0x8
             bz Derecha1
             jump Nada1 ; Si ninguna se cumplió, no moverse
-Arriba1:    out 0x1, mov1
+Arriba1:    add r0, r11,  0x1
+            out r0, mov1
             jmp Jugador2
-Abajo1:     out 0x2, mov1
+Abajo1:     add r0, r11,  0x2
+            out r0, mov1
             jmp Jugador2
-Izquierda1: out 0x3, mov1
+Izquierda1: add r0, r11,  0x3
+            out r0, mov1
             jmp Jugador2
-Derecha1:   out 0x4, mov1
+Derecha1:   add r0, r11,  0x4
+            out r0, mov1
             jmp Jugador2
-Nada1:      out 0x0, mov1
+Nada1:      add r0, r11,  0x0
+            out r0, mov1
 
 Jugador2:   inp r2, numpad ; Recibir movimientos de jugador 2
             jsb delay
@@ -62,15 +67,20 @@ Jugador2:   inp r2, numpad ; Recibir movimientos de jugador 2
             sub r22, r22, 0x8 
             bz Abajo2
             jmp Nada2;
-Arriba2:    out 0x1, mov2
-            jmp WinCnt1
-Abajo2:     out 0x2, mov2
-            jmp WinCnt1
-Izquierda2: out 0x3, mov2
-            jmp WinCnt1
-Derecha2:   out 0x4, mov2
-            jmp WinCnt1
-Nada2:      out 0x0, mov2
+Arriba2:    add r0, r22,  0x2
+            out r0, mov1
+            jmp Jugador2
+Abajo2:     add r0, r22,  0x5
+            out r0, mov1
+            jmp Jugador2
+Izquierda2: add r0, r22,  0x4
+            out r0, mov1
+            jmp Jugador2
+Derecha2:   add r0, r22,  0x6
+            out r0, mov1
+            jmp Jugador2
+Nada2:      add r0, r22,  0x0
+            out r0, mov1
 
 WinCnt1:    inp r3, win1 ; Recibe win condition
             jsb delay
